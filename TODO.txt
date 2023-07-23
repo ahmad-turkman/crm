@@ -1,0 +1,2 @@
+- For opps, we should be able to go back to previous steps.
+In this case, all steps that are after that step should be deleted.

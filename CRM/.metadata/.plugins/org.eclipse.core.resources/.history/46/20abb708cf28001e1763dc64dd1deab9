@@ -1,0 +1,279 @@
+package com.crm.dao;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.springframework.util.NumberUtils;
+
+import com.crm.Utility;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+public class FunnelDao {
+	private String query;
+
+	public String getFunnelValues(Map<String, String> hmap) throws SQLException, ParseException {
+		StepsDao bla = new StepsDao();
+		JsonArray items = bla.getAllSteps();
+		Map<Integer, Map<String, Integer>> stepsCount = new HashMap<>();
+		for (JsonElement element : items) {
+			
+				String step = element.getAsJsonObject().get("description").toString();
+				
+				int pourcent = Integer.parseInt(element.getAsJsonObject().get("percentage").toString());
+
+				Map<String, Integer> count = new HashMap<>();
+				count.put(step, 0);
+				stepsCount.put(pourcent, count);
+			
+		}
+		
+		query = "SELECT group_concat(DISTINCT C.percentage order by percentage separator '@') AS PROBABILITIES " + 
+				" FROM opportunities B " + 
+				" LEFT JOIN probabilities A ON A.opp_id = B.id " + 
+				" LEFT JOIN sales_steps C ON C.id = A.step_id " + 
+				"WHERE year(B.creation_date) = '" + hmap.get("year") + "' " +
+				" group by B.id";
+
+		Map<String, JsonObject> resultMap = new HashMap<>();
+		
+		JsonObject all = new JsonObject();
+		all.add("probabilities", new JsonArray());
+		
+		resultMap.put("ALL", all);
+		
+		
+		JsonArray probabs = null;
+		
+		Utility.connect();
+		
+		try (PreparedStatement ps = Utility.getConn().prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+						
+						all.addProperty("CLIENT", rs.getString("NOM_CLIENT_CIBLE"));
+						
+						probabs = all.get("probabilities").getAsJsonArray();
+						
+						if(rs.getString("PROBABILITIES")!=null)
+							probabs.add(rs.getString("PROBABILITIES"));
+					
+				}
+			}
+		
+		
+			String query1 = "SELECT B.IDUNIQUE, B.NUM_DOC, B.ID_CLIENT_CIBLE, B.NOM_CLIENT_CIBLE, B.ADRESSE, SUBSTRING(B.CP, 1, 2) AS CP, "
+					+ "CONCAT(UPPER(SUBSTRING(B.VILLE,1,1)),LOWER(SUBSTRING(B.VILLE,2))) as VILLE, B.PAYS, B.COD_PAYS, C2.DESCRIPTION AS ORIGINE, CONCAT(COM.PRENOM, ' ', COM.NOM) AS COMMERCIAL, "
+					+ "CONCAT(PRES.PRENOM, ' ', PRES.NOM) AS PRESCRIBER, B.DATE_CREATION, "
+					+ "group_concat(DISTINCT A.POURCENT, '#', A.DATE_CREATION, '$', NBR_J order by POURCENT separator '@') AS PROBABILITIES, "
+					+ "CONCAT(X.ID_XTALK,'-',X.IMAGE_SUFFIX,'.jpg') AS COM_PHOTO, "
+					+ " B.ID_CAMPAGNE, COALESCE(CCF.TITRE, CCP.TITRE) AS CAMPAGNE " + "FROM GEST_VENTE_LST B "
+					+ "LEFT JOIN doc_proba A ON A.ID_ORIGINE = concat('VENTE_', B.IDUNIQUE) "
+					+ "LEFT JOIN (codes_det C INNER JOIN CODES_DET_PERSONNALISE D ON D.ID_CLIENT = ? AND D.ID_CODES_LST = C.ID_CODES_LST AND D.ID_CODES_DET = C.V_NOM) ON ((C.ID_CLIENT IS NULL AND C.ACTIVE = '1') OR C.ID_CLIENT = ?) AND D.ACTIVE = '1' AND C.ID_CODES_LST = '00000000000000000193' AND C.COD_PAYS = ? AND (C.ARCHIVE IS NULL OR C.ARCHIVE <> '1') "
+					+ "AND C.ID_CODES_LST = '00000000000000000193' "
+					+ "LEFT JOIN CODES_DET C2 ON C2.V_NOM = B.ID_ORIGINE_OPP AND C2.COD_PAYS = ? "
+					+ "LEFT JOIN XTPERS COM ON COM.IDUNIQUE = B.ID_COMMERCIAL "
+					+ "LEFT JOIN XTPERS PRES ON PRES.IDUNIQUE = B.ID_PRESCRIPTEUR "
+					+ "LEFT JOIN ID_CONTACTS X ON X.XT_PERS = B.ID_COMMERCIAL AND X.IMAGE_PRESENTE = '1' "
+					+ "LEFT JOIN crm_campagne_fidelisation CCF ON B.ID_CAMPAGNE = CONCAT('FIDEL_', CCF.IDUNIQUE) "
+					+ "LEFT JOIN crm_campagne_prospection CCP ON B.ID_CAMPAGNE = CONCAT('PROSP_', CCP.IDUNIQUE) "
+					+ "WHERE B.ID_CLIENT = ? AND TYPE_DOC = 'V_OP' AND A.POURCENT is not null "
+					+ "AND B.DATE_CREATION LIKE '" + hmap.get("year") + "%' " + " group by NUM_DOC order by NUM_DOC ";
+
+			try (PreparedStatement ps = cx.prepareStatement(query1)) {
+				String compteId = hmap.get("compteId");
+				String langue = hmap.get("langue");
+				ps.setString(1, compteId);
+				ps.setString(2, compteId);
+				ps.setString(3, langue);
+				ps.setString(4, langue);
+				ps.setString(5, compteId);
+
+				try (ResultSet rs = ps.executeQuery()) {
+					while (rs.next()) {
+						String key = "";
+						for (String f : f_array)
+							key += rs.getString(f) + "_";
+
+						JsonObject obj = resultMap.get(key).getAsJsonObject();
+						probabs = obj.get("probabilities").getAsJsonArray();
+						probabs.add(rs.getString("PROBABILITIES"));
+					}
+				}
+			}
+
+		JsonArray out = new JsonArray();
+
+		for (Map.Entry<String, JsonObject> result : resultMap.entrySet()) {
+			Map<String, Integer> nbr_jSumAndCounts = new HashMap<>();
+			Map<String, Map<Integer, String>> minNbr_js = new HashMap<>();
+			JsonObject oneObject = new JsonObject();
+
+			int firstStepPourcent = 200;
+			String firstStep = "";
+			JsonArray asJsonArray = result.getValue().getAsJsonObject().get("probabilities").getAsJsonArray();
+			ArrayList<String> probs = new ArrayList<>();
+			System.out.println("asJsonArray : " + asJsonArray);
+			for(JsonElement el : asJsonArray)
+				probs.add(el.toString().replace("\"", ""));
+
+			System.out.println("el probs: " + probs);
+			for (String prob : probs) {
+				Map<String, Integer> probabilitiesMap = new HashMap<>();
+				String[] probabilities = prob.split("@");
+				String[] initial = probabilities[0].split("\\$")[0].split("#");
+				String maxDateProb = initial[0];
+				LocalDateTime maxDate = null;
+				System.out.println("initial : " + Arrays.toString(initial));
+				maxDate = LocalDateTime.parse(initial[1].replace(" ", "T"));
+
+				for (String probabilityWithDate : probabilities) {
+					String[] splittedProbAndDate = probabilityWithDate.split("\\$")[0].split("#");
+					String probability = splittedProbAndDate[0];
+					String date = splittedProbAndDate[1];
+
+					LocalDateTime dateCreation = LocalDateTime.parse(date.replace(" ", "T"));
+
+					if (dateCreation.isAfter(maxDate)) {
+						maxDate = dateCreation;
+						maxDateProb = probability;
+					}
+
+				}
+
+				for (String probabilityWithDateAndNbrJ : probabilities) {
+					String[] splittedProbAndDate = probabilityWithDateAndNbrJ.split("\\$")[0].split("#");
+					int nbr_j = NumberUtils.toInt(probabilityWithDateAndNbrJ.split("\\$")[1]);
+					String probability = splittedProbAndDate[0];
+
+					if (NumberUtils.toFloat(probability) <= NumberUtils.toFloat(maxDateProb)) {
+						probabilitiesMap.put(probability, nbr_j);
+						if (!nbr_jSumAndCounts.containsKey(probability)) {
+							nbr_jSumAndCounts.put(probability, 0);
+						}
+						if (!minNbr_js.containsKey(probability)) {
+							String client = result.getValue().get("CLIENT").toString().replace("\"", "");
+							Map<Integer, String> map = new HashMap<>();
+							map.put(nbr_j, client);
+							minNbr_js.put(probability, map);
+						}
+					}
+				}
+
+				for (Map.Entry<String, Integer> entry : probabilitiesMap.entrySet()) {
+					String key = entry.getKey();
+					int proba = (int) NumberUtils.toFloat(entry.getKey());
+					int nbr_j = entry.getValue();
+					int sum = nbr_jSumAndCounts.get(key);
+					nbr_jSumAndCounts.put(key, sum + nbr_j);
+					int min = (int) (minNbr_js.get(key).keySet().toArray())[0];
+					if(nbr_j < min) {
+						Map<Integer, String> map = new HashMap<>();
+						String client = result.getValue().get("CLIENT").toString().replace("\"", "");
+						map.put(nbr_j, client);
+						minNbr_js.put(key, map);
+					}
+					if (!stepsCount.containsKey(proba)) {
+						Map<String, Integer> m = new HashMap<>();
+						m.put(key, 0);
+						stepsCount.put(proba, m);
+					}
+					Map<String, Integer> stepCount = stepsCount.get(proba);
+					String step = (String) (stepCount.keySet().toArray())[0];
+
+					if (proba < firstStepPourcent) {
+						firstStep = step;
+						firstStepPourcent = proba;
+					}
+
+					if (step.contains("/")) {
+						step = step.substring(0, step.indexOf("/"));
+					}
+					stepsCount.get(proba).put(step, stepsCount.get(proba).get(step) + 1);
+				}
+			}
+			if (firstStep.isEmpty())
+				return new JsonArray().toString();
+			JsonArray funnelData = new JsonArray();
+			JsonObject o = new JsonObject();
+			int stepNumber = 1;
+			o.addProperty("step", stepNumber);
+			if (NumberUtils.isParsable(firstStep))
+				o.addProperty("category", "........");
+			else
+				o.addProperty("category", firstStep);
+			o.addProperty("pourcentage", firstStepPourcent + "%");
+			int firstCount = stepsCount.get(firstStepPourcent).get(firstStep);
+			o.addProperty("value", firstCount);
+			o.addProperty("conversion", 100 + "%");
+			o.addProperty("loss", "0%");
+			o.addProperty("avg_time", 0);
+			funnelData.add(o);
+			float prevConversion = 100;
+			SortedSet<Integer> keys = new TreeSet<>(stepsCount.keySet());
+			for (int key : keys) {
+				String keyAsString = key+".00";
+				if (key == firstStepPourcent)
+					continue;
+				JsonObject obj = new JsonObject();
+				int pourcent = key;
+				Map<String, Integer> stepCountMap = stepsCount.get(key);
+				String step = (String) (stepCountMap.keySet().toArray())[0];
+				float count = stepCountMap.get(step);
+				if (NumberUtils.isParsable(step)) {
+					step = "........";
+				}
+
+				if (count == 0)
+					continue;
+				obj.addProperty("step", ++stepNumber);
+				obj.addProperty("category", step);
+				obj.addProperty("pourcentage", pourcent + "%");
+				obj.addProperty("value", (int) count);
+				float conversion = (count / firstCount) * 100;
+
+				if (conversion < 0)
+					conversion = 0;
+				else if (conversion > 100)
+					conversion = 100;
+				obj.addProperty("conversion", (int) (Math.round(conversion)) + "%");
+				int loss = Math.round(prevConversion - conversion);
+				if (loss < 0)
+					loss = 0;
+				else if (loss > 100)
+					loss = 100;
+				obj.addProperty("loss", loss + "%");
+				int avgTime = nbr_jSumAndCounts.get(keyAsString) / (int)count;
+				obj.addProperty("avg_time", avgTime);
+				int min = (int) (minNbr_js.get(keyAsString).keySet().toArray())[0];
+				String prosp = minNbr_js.get(keyAsString).get(min);
+				obj.addProperty("top_prosp", prosp + " (" + min + ")");
+				prevConversion = conversion;
+				if (count > firstCount)
+					firstCount = (int) count;
+				funnelData.add(obj);
+			}
+
+			for (Entry<Integer, Map<String, Integer>> entry : stepsCount.entrySet()) {
+				int proba = entry.getKey();
+				Map<String, Integer> stepCount = stepsCount.get(proba);
+				String step = (String) (stepCount.keySet().toArray())[0];
+				stepsCount.get(proba).put(step, 0);
+			}
+			nbr_jSumAndCounts.clear();
+			oneObject.add("data", funnelData);
+			out.add(oneObject);
+		}
+		return out.toString();
+	}
+}
