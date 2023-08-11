@@ -179,8 +179,6 @@ const Grid = () => {
       end_date: formValue.end_date.toLocaleDateString().replaceAll('/', '-'),
     };
 
-    console.log('params', params);
-
     if (valid) {
       axios
         .post('/cap', null, {
@@ -204,9 +202,6 @@ const Grid = () => {
         .toLocaleDateString()
         .replaceAll('/', '-'),
     };
-
-    console.log('params', params);
-    console.log('editFormValue', editFormValue);
 
     if (valid) {
       axios
@@ -241,7 +236,7 @@ const Grid = () => {
     <>
       <Stack direction="column" alignItems="stretch" style={{ height: '100%' }}>
         <span style={{ fontWeight: 'bold', fontSize: '20px' }}>
-          List of opportunities
+          List of Commercial action plans
         </span>
         <ButtonToolbar>
           <Whisper

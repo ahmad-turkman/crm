@@ -147,9 +147,12 @@ const Grid = () => {
   };
 
   const handleEdit = (valid) => {
-    console.log(editFormValue);
-
     if (valid) {
+      let price = editFormValue.price;
+      price = price.substring(0, price.indexOf(' '));
+
+      editFormValue.price = price;
+
       axios
         .put('/products', null, {
           params: editFormValue,

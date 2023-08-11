@@ -231,6 +231,8 @@ const Grid = () => {
         .replaceAll('/', '-'),
     };
 
+    console.log(params);
+
     if (valid) {
       axios
         .put('/opps', null, {

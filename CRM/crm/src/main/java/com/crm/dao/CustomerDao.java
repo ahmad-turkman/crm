@@ -34,14 +34,8 @@ public class CustomerDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("company_name", rs.getString("company_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
-			temp.addProperty("first_name", rs.getString("first_name"));
-			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("birth_date", rs.getString("birth_date"));
-			temp.addProperty("address", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
-			temp.addProperty("postal_code", rs.getString("postal_code"));
+			temp.addProperty("company_id", rs.getString("company_id"));
+			temp.addProperty("address", rs.getString("address"));
 			temp.addProperty("fixed_phone", rs.getString("fixed_phone"));
 			temp.addProperty("mobile_phone", rs.getString("mobile_phone"));
 			temp.addProperty("email", rs.getString("email"));
@@ -62,30 +56,24 @@ public class CustomerDao {
 	public String addCustomer(Map<String, String> hmap) throws SQLException, IOException {
 		Utility.connect();
 
-		String query1 = "INSERT INTO customers (company_name, account_id, first_name, last_name, birth_date, adress, city, country, postal_code, fixed_phone, mobile_phone, email, manager_name, turnover, workforce, creation_date, register_number, website, is_customer) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String query1 = "INSERT INTO customers (company_name, company_id, address, fixed_phone, mobile_phone, email, manager_name, turnover, workforce, creation_date, register_number, website, is_customer) "
+				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("company_name"));
-		ps1.setString(2, hmap.get("account_id"));
-		ps1.setString(3, hmap.get("first_name"));
-		ps1.setString(4, hmap.get("last_name"));
-		ps1.setString(5, hmap.get("birth_date"));
-		ps1.setString(6, hmap.get("address"));
-		ps1.setString(7, hmap.get("city"));
-		ps1.setString(8, hmap.get("country"));
-		ps1.setString(9, hmap.get("postal_code"));
-		ps1.setString(10, hmap.get("fixed_phone"));
-		ps1.setString(11, hmap.get("mobile_phone"));
-		ps1.setString(12, hmap.get("email"));
-		ps1.setString(13, hmap.get("manager_name"));
-		ps1.setString(14, hmap.get("turnover"));
-		ps1.setString(15, hmap.get("workforce"));
-		ps1.setString(16, hmap.get("creation_date"));
-		ps1.setString(17, hmap.get("register_number"));
-		ps1.setString(18, hmap.get("website"));
-		ps1.setString(19, hmap.get("is_customer"));
+		ps1.setString(2, hmap.get("company_id"));
+		ps1.setString(3, hmap.get("address"));
+		ps1.setString(4, hmap.get("fixed_phone"));
+		ps1.setString(5, hmap.get("mobile_phone"));
+		ps1.setString(6, hmap.get("email"));
+		ps1.setString(7, hmap.get("manager_name"));
+		ps1.setString(8, hmap.get("turnover"));
+		ps1.setString(9, hmap.get("workforce"));
+		ps1.setString(10, hmap.get("creation_date"));
+		ps1.setString(11, hmap.get("register_number"));
+		ps1.setString(12, hmap.get("website"));
+		ps1.setString(13, hmap.get("is_customer"));
 
 		ps1.executeUpdate();
 
@@ -97,14 +85,8 @@ public class CustomerDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("company_name", rs.getString("company_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
-			temp.addProperty("first_name", rs.getString("first_name"));
-			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("birth_date", rs.getString("birth_date"));
-			temp.addProperty("address", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
-			temp.addProperty("postal_code", rs.getString("postal_code"));
+			temp.addProperty("company_id", rs.getString("company_id"));
+			temp.addProperty("address", rs.getString("address"));
 			temp.addProperty("fixed_phone", rs.getString("fixed_phone"));
 			temp.addProperty("mobile_phone", rs.getString("mobile_phone"));
 			temp.addProperty("email", rs.getString("email"));
@@ -151,14 +133,8 @@ public class CustomerDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("company_name", rs.getString("company_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
-			temp.addProperty("first_name", rs.getString("first_name"));
-			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("birth_date", rs.getString("birth_date"));
-			temp.addProperty("address", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
-			temp.addProperty("postal_code", rs.getString("postal_code"));
+			temp.addProperty("company_id", rs.getString("company_id"));
+			temp.addProperty("address", rs.getString("address"));
 			temp.addProperty("fixed_phone", rs.getString("fixed_phone"));
 			temp.addProperty("mobile_phone", rs.getString("mobile_phone"));
 			temp.addProperty("email", rs.getString("email"));
@@ -193,14 +169,8 @@ public class CustomerDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("company_name", rs.getString("company_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
-			temp.addProperty("first_name", rs.getString("first_name"));
-			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("birth_date", rs.getString("birth_date"));
-			temp.addProperty("address", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
-			temp.addProperty("postal_code", rs.getString("postal_code"));
+			temp.addProperty("company_id", rs.getString("company_id"));
+			temp.addProperty("address", rs.getString("address"));
 			temp.addProperty("fixed_phone", rs.getString("fixed_phone"));
 			temp.addProperty("mobile_phone", rs.getString("mobile_phone"));
 			temp.addProperty("email", rs.getString("email"));

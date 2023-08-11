@@ -41,14 +41,14 @@ public class CAPDao {
 	public String add(Map<String, String> hmap) throws SQLException, IOException {
 		Utility.connect();
 
-		String query1 = "INSERT INTO cap (description, start_date, end_date, account_id) VALUES(?, STR_TO_DATE(?,'%d-%m-%Y'), STR_TO_DATE(?,'%d-%m-%Y'), ?)";
+		String query1 = "INSERT INTO cap (description, start_date, end_date, company_id) VALUES(?, STR_TO_DATE(?,'%d-%m-%Y'), STR_TO_DATE(?,'%d-%m-%Y'), ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("description"));
 		ps1.setString(2, hmap.get("start_date"));
 		ps1.setString(3, hmap.get("end_date"));
-		ps1.setString(4, hmap.get("account_id"));
+		ps1.setString(4, hmap.get("company_id"));
 
 		ps1.executeUpdate();
 

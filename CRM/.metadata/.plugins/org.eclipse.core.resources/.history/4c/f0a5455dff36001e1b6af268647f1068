@@ -1,0 +1,87 @@
+package com.crm.dao;
+
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import com.crm.Utility;
+import com.google.gson.JsonObject;
+
+@Component
+public class AccountDao {
+
+	public String login(Map<String, String> hmap) throws SQLException, IOException {
+		Utility.connect();
+
+		String q = "SELECT COUNT(*), password, is_admin, contact_id, company_id FROM account WHERE username=?";
+
+		PreparedStatement prs = Utility.getConn().prepareStatement(q);
+
+		prs.setString(1, hmap.get("username"));
+
+		ResultSet res = prs.executeQuery();
+
+		res.next();
+
+		if (res.getInt(1) > 0) {
+			
+			//BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			//encoder.matches(hmap.get("password"), res.getString(2))
+			
+			if (hmap.get("password").equals(res.getString(2))) {
+				
+				
+				
+				return getAccountDetails(hmap.get("username")).toString();
+				
+			} else {
+				throw new SQLException("Unauthorized");
+			}
+		} else {
+			throw new SQLException("No account found!");
+		}
+	}
+	
+	private JsonObject getAccountDetails(String username) throws SQLException {
+		
+		Utility.connect();
+
+		String query = "SELECT COUNT(*), password FROM account WHERE username=?";
+	
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		JsonObject temp = new JsonObject();
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("company_name", rs.getString("company_name"));
+			temp.addProperty("company_id", rs.getString("company_id"));
+			temp.addProperty("first_name", rs.getString("first_name"));
+			temp.addProperty("last_name", rs.getString("last_name"));
+			temp.addProperty("birth_date", rs.getString("birth_date"));
+			temp.addProperty("address", rs.getString("adress"));
+			temp.addProperty("city", rs.getString("city"));
+			temp.addProperty("country", rs.getString("country"));
+			temp.addProperty("postal_code", rs.getString("postal_code"));
+			temp.addProperty("fixed_phone", rs.getString("fixed_phone"));
+			temp.addProperty("mobile_phone", rs.getString("mobile_phone"));
+			temp.addProperty("email", rs.getString("email"));
+			temp.addProperty("manager_name", rs.getString("manager_name"));
+			temp.addProperty("turnover", rs.getString("turnover"));
+			temp.addProperty("workforce", rs.getString("workforce"));
+			temp.addProperty("creation_date", rs.getString("creation_date"));
+			temp.addProperty("register_number", rs.getString("register_number"));
+			temp.addProperty("website", rs.getString("website"));
+			temp.addProperty("is_customer", rs.getString("is_customer"));
+		}
+
+		return temp;
+
+	}
+
+}

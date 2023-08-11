@@ -3,4 +3,6 @@
 <fullyQualifiedTypeName name="com.crm.dao.OppDao"/>
 <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestParam"/>
 <fullyQualifiedTypeName name="com.crm.dao.FunnelDao"/>
+<fullyQualifiedTypeName name="com.crm.dao.AccountDao"/>
+<fullyQualifiedTypeName name="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 </qualifiedTypeNameHistroy>

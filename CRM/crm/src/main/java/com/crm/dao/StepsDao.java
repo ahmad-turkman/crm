@@ -22,7 +22,7 @@ public class StepsDao {
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
-
+		
 		int a = 0;
 		
 		while (rs.next()) {
@@ -32,7 +32,6 @@ public class StepsDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("number", a++);
 			temp.addProperty("description", rs.getString("description"));
-			temp.addProperty("emoji", rs.getString("emoji"));
 			temp.addProperty("percentage", rs.getString("percentage"));
 
 			out.add(temp);
@@ -44,14 +43,13 @@ public class StepsDao {
 	public String addStep(Map<String, String> hmap) throws SQLException, IOException {
 		Utility.connect();
 
-		String query1 = "INSERT INTO sales_steps (description, emoji, percentage, account_id) VALUES(?, ?, ?, ?)";
+		String query1 = "INSERT INTO sales_steps (description, percentage, company_id) VALUES(?, ?, ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("description"));
-		ps1.setString(2, hmap.get("emoji"));
-		ps1.setString(3, hmap.get("percentage"));
-		ps1.setString(4, hmap.get("account_id"));
+		ps1.setString(2, hmap.get("percentage"));
+		ps1.setString(3, hmap.get("company_id"));
 
 		ps1.executeUpdate();
 
@@ -65,7 +63,6 @@ public class StepsDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("description", rs.getString("description"));
-			temp.addProperty("emoji", rs.getString("emoji"));
 			temp.addProperty("percentage", rs.getString("percentage"));
 		}
 		return temp.toString();
@@ -106,7 +103,6 @@ public class StepsDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("description", rs.getString("description"));
-			temp.addProperty("emoji", rs.getString("emoji"));
 			temp.addProperty("percentage", rs.getString("percentage"));
 		}
 		return temp.toString();
@@ -131,7 +127,6 @@ public class StepsDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("description", rs.getString("description"));
-			temp.addProperty("emoji", rs.getString("emoji"));
 			temp.addProperty("percentage", rs.getString("percentage"));
 		}
 

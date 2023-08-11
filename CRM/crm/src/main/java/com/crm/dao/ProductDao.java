@@ -29,8 +29,8 @@ public class ProductDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
-			temp.addProperty("price", rs.getString("price"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("price", rs.getString("price") + " SYP");
+			temp.addProperty("company_id", rs.getString("company_id"));
 
 			out.add(temp);
 		}
@@ -41,13 +41,13 @@ public class ProductDao {
 	public String addproduct(Map<String, String> hmap) throws SQLException, IOException {
 		Utility.connect();
 
-		String query1 = "INSERT INTO products (name, price, account_id) VALUES(?, ?, ?)";
+		String query1 = "INSERT INTO products (name, price, company_id) VALUES(?, ?, ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("name"));
 		ps1.setString(2, hmap.get("price"));
-		ps1.setString(3, hmap.get("account_id"));
+		ps1.setString(3, hmap.get("company_id"));
 
 		ps1.executeUpdate();
 
@@ -61,8 +61,8 @@ public class ProductDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
-			temp.addProperty("price", rs.getString("price"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("price", rs.getString("price") + " SYP");
+			temp.addProperty("company_id", rs.getString("company_id"));
 		}
 		return temp.toString();
 
@@ -102,8 +102,8 @@ public class ProductDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
-			temp.addProperty("price", rs.getString("price"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("price", rs.getString("price") + " SYP");
+			temp.addProperty("company_id", rs.getString("company_id"));
 		}
 		return temp.toString();
 
@@ -127,8 +127,8 @@ public class ProductDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
-			temp.addProperty("price", rs.getString("price"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("price", rs.getString("price") + " SYP");
+			temp.addProperty("company_id", rs.getString("company_id"));
 		}
 
 		String query = "DELETE FROM products WHERE id=?";

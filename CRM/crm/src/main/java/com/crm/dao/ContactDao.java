@@ -32,15 +32,13 @@ public class ContactDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("first_name", rs.getString("first_name"));
 			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("company_id", rs.getString("company_id"));
 			temp.addProperty("birth_date", rs.getString("birth_date"));
 			temp.addProperty("employment_date", rs.getString("employment_date"));
 			temp.addProperty("role", rs.getString("role"));
 			temp.addProperty("phone", rs.getString("phone"));
 			temp.addProperty("email", rs.getString("email"));
-			temp.addProperty("adress", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
+			temp.addProperty("address", rs.getString("address"));
 
 			out.add(temp);
 		}
@@ -51,23 +49,20 @@ public class ContactDao {
 	public String addContact(Map<String, String> hmap) throws SQLException, IOException {
 		Utility.connect();
 
-		String query1 = "INSERT INTO contacts (first_name, last_name, account_id, birth_date, employment_date, role, phone, email, adress, city, country) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String query1 = "INSERT INTO contacts (first_name, last_name, company_id, birth_date, employment_date, role, phone, email, address) "
+				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("first_name"));
 		ps1.setString(2, hmap.get("last_name"));
-		ps1.setString(3, hmap.get("account_id"));
+		ps1.setString(3, hmap.get("company_id"));
 		ps1.setString(4, hmap.get("birth_date"));
 		ps1.setString(5, hmap.get("employment_date"));
 		ps1.setString(6, hmap.get("role"));
 		ps1.setString(7, hmap.get("phone"));
 		ps1.setString(8, hmap.get("email"));
 		ps1.setString(9, hmap.get("adress"));
-		ps1.setString(10, hmap.get("city"));
-		ps1.setString(11, hmap.get("country"));
-
 		ps1.executeUpdate();
 
 		String getId = "SELECT * FROM contacts WHERE id = (SELECT MAX(id) FROM contacts)";
@@ -79,15 +74,13 @@ public class ContactDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("first_name", rs.getString("first_name"));
 			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("company_id", rs.getString("company_id"));
 			temp.addProperty("birth_date", rs.getString("birth_date"));
 			temp.addProperty("employment_date", rs.getString("employment_date"));
 			temp.addProperty("role", rs.getString("role"));
 			temp.addProperty("phone", rs.getString("phone"));
 			temp.addProperty("email", rs.getString("email"));
-			temp.addProperty("adress", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
+			temp.addProperty("address", rs.getString("address"));
 		}
 
 		return temp.toString();
@@ -125,15 +118,13 @@ public class ContactDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("first_name", rs.getString("first_name"));
 			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("company_id", rs.getString("company_id"));
 			temp.addProperty("birth_date", rs.getString("birth_date"));
 			temp.addProperty("employment_date", rs.getString("employment_date"));
 			temp.addProperty("role", rs.getString("role"));
 			temp.addProperty("phone", rs.getString("phone"));
 			temp.addProperty("email", rs.getString("email"));
-			temp.addProperty("adress", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
+			temp.addProperty("address", rs.getString("address"));
 		}
 
 		return temp.toString();
@@ -159,15 +150,13 @@ public class ContactDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("first_name", rs.getString("first_name"));
 			temp.addProperty("last_name", rs.getString("last_name"));
-			temp.addProperty("account_id", rs.getString("account_id"));
+			temp.addProperty("company_id", rs.getString("company_id"));
 			temp.addProperty("birth_date", rs.getString("birth_date"));
 			temp.addProperty("employment_date", rs.getString("employment_date"));
 			temp.addProperty("role", rs.getString("role"));
 			temp.addProperty("phone", rs.getString("phone"));
 			temp.addProperty("email", rs.getString("email"));
-			temp.addProperty("adress", rs.getString("adress"));
-			temp.addProperty("city", rs.getString("city"));
-			temp.addProperty("country", rs.getString("country"));
+			temp.addProperty("address", rs.getString("address"));
 		}
 
 		String query = "DELETE FROM contacts WHERE id=?";

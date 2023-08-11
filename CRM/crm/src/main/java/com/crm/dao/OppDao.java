@@ -55,12 +55,12 @@ public class OppDao {
 	public String add(Map<String, String> hmap) throws SQLException, IOException {
 		Utility.connect();
 
-		String query1 = "INSERT INTO opportunities (description, account_id, customer_id, product_id, status, creation_date) VALUES(?, ?, ?, ?, ?, STR_TO_DATE(?,'%d-%m-%Y'))";
+		String query1 = "INSERT INTO opportunities (description, company_id, customer_id, product_id, status, creation_date) VALUES(?, ?, ?, ?, ?, STR_TO_DATE(?,'%d-%m-%Y'))";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("description"));
-		ps1.setString(2, hmap.get("account_id"));
+		ps1.setString(2, hmap.get("company_id"));
 		ps1.setString(3, hmap.get("customer_id"));
 		ps1.setString(4, hmap.get("product_id"));
 		ps1.setString(5, hmap.get("status"));
@@ -73,13 +73,12 @@ public class OppDao {
 		ResultSet Idrs = getIDps.executeQuery();
 		Idrs.next();
 
-		String query2 = "INSERT INTO probabilities (account_id, opp_id, step_id, creation_date) VALUES(?, ?, ?, NOW())";
+		String query2 = "INSERT INTO probabilities (opp_id, step_id, creation_date) VALUES(?, ?, NOW())";
 
 		PreparedStatement ps2 = Utility.getConn().prepareStatement(query2);
 
-		ps2.setString(1, hmap.get("account_id"));
-		ps2.setString(2, Idrs.getString("id"));
-		ps2.setString(3, hmap.get("step_id"));
+		ps2.setString(1, Idrs.getString("id"));
+		ps2.setString(2, hmap.get("step_id"));
 
 		ps2.executeUpdate();
 
@@ -131,15 +130,16 @@ public class OppDao {
 
 		ps.executeUpdate();
 
-		String query2 = "INSERT INTO probabilities (account_id, opp_id, step_id, creation_date) VALUES(?, ?, ?, NOW())";
-
-		PreparedStatement ps2 = Utility.getConn().prepareStatement(query2);
-
-		ps2.setString(1, hmap.get("account_id"));
-		ps2.setString(2, hmap.get("id"));
-		ps2.setString(3, hmap.get("step_id"));
-
-		ps2.executeUpdate();
+		if(hmap.containsKey("step_changed")) {
+			String query2 = "INSERT INTO probabilities (opp_id, step_id, creation_date) VALUES(?, ?, NOW())";
+	
+			PreparedStatement ps2 = Utility.getConn().prepareStatement(query2);
+	
+			ps2.setString(1, hmap.get("id"));
+			ps2.setString(2, hmap.get("step_id"));
+	
+			ps2.executeUpdate();
+		}
 
 		String getId = "SELECT A.*, B.company_name AS customer, B.is_customer, C.name AS product, "
 				+ "(SELECT CONCAT(sa.id, ',', percentage) FROM probabilities p LEFT JOIN sales_steps sa ON sa.id = p.step_id WHERE opp_id = A.id order by percentage desc limit 1) AS probability "

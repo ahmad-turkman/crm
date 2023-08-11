@@ -76,6 +76,13 @@ const AddModal = ({
                 //  !formValue.probability ||
                 //  parseInt(item.percentage) >= parseInt(formValue.probability)
                 //)}
+                onChange={(value) => {
+                  setFormValue({
+                    ...formValue,
+                    step_id: value,
+                    step_changed: true,
+                  });
+                }}
               />
               <Form.HelpText>Required</Form.HelpText>
             </Form.Group>
