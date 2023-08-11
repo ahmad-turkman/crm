@@ -35,18 +35,8 @@ const columns = [
     width: 200,
   },
   {
-    key: 'adress',
+    key: 'address',
     label: 'Address',
-    width: 200,
-  },
-  {
-    key: 'city',
-    label: 'City',
-    width: 200,
-  },
-  {
-    key: 'country',
-    label: 'Country',
     width: 200,
   },
   {
@@ -82,20 +72,42 @@ const Grid = () => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [formValue, setFormValue] = useState({});
-  const [editFormValue, setEditFormValue] = useState({});
+  const [formValue, setFormValue] = useState({
+    address: '',
+    birth_date: new Date(),
+    company_id: '',
+    email: '',
+    employment_date: new Date(),
+    first_name: '',
+    id: '',
+    last_name: '',
+    phone: '',
+    role: '',
+  });
+  const [editFormValue, setEditFormValue] = useState({
+    address: '',
+    birth_date: new Date(),
+    company_id: '',
+    email: '',
+    employment_date: new Date(),
+    first_name: '',
+    id: '',
+    last_name: '',
+    phone: '',
+    role: '',
+  });
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { StringType } = Schema.Types;
+  const { StringType, DateType } = Schema.Types;
 
   const model = Schema.Model({
     first_name: StringType().isRequired('This field is required.'),
-    email: StringType()
-      .isRequired('This field is required.')
-      .isEmail('Please enter a valid email address.'),
+    address: StringType().isRequired('This field is required.'),
+    birth_date: DateType().isRequired('This field is required.'),
+    employment_date: DateType().isRequired('This field is required.'),
   });
 
   const filteredData = () => {
@@ -133,12 +145,15 @@ const Grid = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get('/contacts', { params: {} })
+      .get('/contacts')
       .then((res) => {
         setLoading(false);
         setData(res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        alert('Error!');
+        console.log(err);
+      });
   }, []);
 
   const handleSortColumn = (sortColumn, sortType) => {
@@ -150,17 +165,49 @@ const Grid = () => {
 
   const handleCloseAdd = () => {
     setOpenAdd(false);
-    setFormValue({});
+    setFormValue({
+      address: '',
+      birth_date: new Date(),
+      company_id: '',
+      email: '',
+      employment_date: new Date(),
+      first_name: '',
+      id: '',
+      last_name: '',
+      phone: '',
+      role: '',
+    });
   };
 
   const handleOpenEdit = (rowData) => {
-    setEditFormValue(rowData);
+    let mydata = {
+      ...rowData,
+      birth_date: rowData.birth_date
+        ? new Date(rowData.birth_date)
+        : new Date(),
+      employment_date: rowData.employment_date
+        ? new Date(rowData.employment_date)
+        : new Date(),
+    };
+
+    setEditFormValue(mydata);
     setOpenEdit(true);
   };
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
-    setEditFormValue({});
+    setEditFormValue({
+      address: '',
+      birth_date: new Date(),
+      company_id: '',
+      email: '',
+      employment_date: new Date(),
+      first_name: '',
+      id: '',
+      last_name: '',
+      phone: '',
+      role: '',
+    });
   };
 
   const handleOpenDelete = (myid) => {
@@ -173,28 +220,49 @@ const Grid = () => {
   };
 
   const handleAdd = (valid) => {
-    console.log(formValue);
+    let params = {
+      ...formValue,
+      birth_date: formValue.birth_date
+        .toLocaleDateString()
+        .replaceAll('/', '-'),
+      employment_date: formValue.employment_date
+        .toLocaleDateString()
+        .replaceAll('/', '-'),
+      company_id: localStorage.getItem('company_id'),
+    };
 
     if (valid) {
       axios
         .post('/contacts', null, {
-          params: formValue,
+          params: params,
         })
         .then((res) => {
           setData([...data, res.data]);
           handleCloseAdd();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          alert('Error!');
+          console.log(err);
+        });
     }
   };
 
   const handleEdit = (valid) => {
-    console.log(editFormValue);
+    let params = {
+      ...editFormValue,
+      birth_date: editFormValue.birth_date
+        .toLocaleDateString()
+        .replaceAll('/', '-'),
+      employment_date: editFormValue.employment_date
+        .toLocaleDateString()
+        .replaceAll('/', '-'),
+      company_id: localStorage.getItem('company_id'),
+    };
 
     if (valid) {
       axios
         .put('/contacts', null, {
-          params: editFormValue,
+          params: params,
         })
         .then((res) => {
           setData(
@@ -204,13 +272,14 @@ const Grid = () => {
           );
           handleCloseEdit();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          alert('Error!');
+          console.log(err);
+        });
     }
   };
 
   const handleDelete = () => {
-    console.log(id);
-
     axios
       .delete('/contacts', {
         params: { id: id },
@@ -219,7 +288,10 @@ const Grid = () => {
         setData(data.filter((item) => item.id !== res.data.id));
         handleCloseDelete();
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        alert('Error!');
+        console.log(err);
+      });
   };
 
   return (

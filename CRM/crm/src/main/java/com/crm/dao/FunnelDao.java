@@ -23,7 +23,7 @@ public class FunnelDao {
 
 	public String getFunnelValues(Map<String, String> hmap) throws SQLException, ParseException {
 		StepsDao bla = new StepsDao();
-		JsonArray items = bla.getAllSteps();
+		JsonArray items = bla.getAllSteps(hmap);
 		Map<Integer, Map<String, Integer>> stepsCount = new HashMap<>();
 
 		for (int i = 0; i < items.size(); ++i) {

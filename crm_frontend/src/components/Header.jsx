@@ -28,7 +28,7 @@ const Header = () => {
           Home
         </Nav.Item>
       </Nav>
-      <Nav pullRight>
+      <Nav pullRight style={{ marginRight: '10px' }}>
         <Nav.Menu icon={<CogIcon spin style={{ fontSize: '1.5em' }} />}>
           <Nav.Item as={Button} icon={<OffIcon />} onClick={() => logout()}>
             logout

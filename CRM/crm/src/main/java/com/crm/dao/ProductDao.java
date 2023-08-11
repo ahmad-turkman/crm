@@ -15,11 +15,16 @@ import com.google.gson.JsonObject;
 @Component
 public class ProductDao {
 
-	public String getAllProducts() throws SQLException {
+	public String getAllProducts(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
-		String query = "SELECT * FROM products ";
+		String query = "SELECT * FROM products WHERE company_id = ? ";
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("company_id"));
+		
+		System.out.println(ps);
+		
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
 
@@ -30,7 +35,6 @@ public class ProductDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
 			temp.addProperty("price", rs.getString("price") + " SYP");
-			temp.addProperty("company_id", rs.getString("company_id"));
 
 			out.add(temp);
 		}
@@ -62,7 +66,6 @@ public class ProductDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
 			temp.addProperty("price", rs.getString("price") + " SYP");
-			temp.addProperty("company_id", rs.getString("company_id"));
 		}
 		return temp.toString();
 
@@ -103,7 +106,6 @@ public class ProductDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
 			temp.addProperty("price", rs.getString("price") + " SYP");
-			temp.addProperty("company_id", rs.getString("company_id"));
 		}
 		return temp.toString();
 
@@ -128,7 +130,6 @@ public class ProductDao {
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("name", rs.getString("name"));
 			temp.addProperty("price", rs.getString("price") + " SYP");
-			temp.addProperty("company_id", rs.getString("company_id"));
 		}
 
 		String query = "DELETE FROM products WHERE id=?";

@@ -112,7 +112,12 @@ const Grid = () => {
   };
 
   const handleOpenEdit = (rowData) => {
-    setEditFormValue(rowData);
+    let myData = {
+      ...rowData,
+      price: rowData.price.substring(0, rowData.price.indexOf(' ')),
+    };
+
+    setEditFormValue(myData);
     setOpenEdit(true);
   };
 
@@ -148,11 +153,6 @@ const Grid = () => {
 
   const handleEdit = (valid) => {
     if (valid) {
-      let price = editFormValue.price;
-      price = price.substring(0, price.indexOf(' '));
-
-      editFormValue.price = price;
-
       axios
         .put('/products', null, {
           params: editFormValue,

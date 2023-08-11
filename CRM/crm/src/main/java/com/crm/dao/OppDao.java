@@ -15,14 +15,18 @@ import com.google.gson.JsonObject;
 @Component
 public class OppDao {
 
-	public String getAll() throws SQLException {
+	public String getAll(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
 		String query = "SELECT A.*, B.company_name AS customer, B.is_customer, C.name AS product, "
 				+ "(SELECT CONCAT(sa.id, ',', percentage) FROM probabilities p LEFT JOIN sales_steps sa ON sa.id = p.step_id WHERE opp_id = A.id order by percentage desc limit 1) AS probability "
 				+ "FROM opportunities A " + "LEFT JOIN customers B ON B.id = A.customer_id "
-				+ "LEFT JOIN products C ON C.id = A.product_id ";
+				+ "LEFT JOIN products C ON C.id = A.product_id "
+				+ "WHERE A.company_id = ?";
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("company_id"));
+		
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
 

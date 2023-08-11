@@ -18,12 +18,14 @@ public class CustomerDao {
 
 	public String getAllCustomers(@RequestParam Map<String, String> hmap) throws SQLException {
 		Utility.connect();
-		String query = "SELECT * FROM customers ";
+		String query = "SELECT * FROM customers WHERE company_id = ? ";
 		
 		if(hmap.containsKey("is_customer"))
-			query += "WHERE is_customer = " + hmap.get("is_customer");
+			query += " AND is_customer = " + hmap.get("is_customer");
 		
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("company_id"));
 		
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
@@ -57,7 +59,7 @@ public class CustomerDao {
 		Utility.connect();
 
 		String query1 = "INSERT INTO customers (company_name, company_id, address, fixed_phone, mobile_phone, email, manager_name, turnover, workforce, creation_date, register_number, website, is_customer) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, STR_TO_DATE(?,'%d-%m-%Y'), ?, ?, ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
@@ -106,28 +108,34 @@ public class CustomerDao {
 	public String updateCustomer(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
 
-		String query = "";
-		StringBuilder builder = new StringBuilder("UPDATE customers SET ");
-		for (Map.Entry<String, String> entry : hmap.entrySet()) {
-			if (entry.getKey().equals("id"))
-				continue;
-			builder.append(entry.getKey() + "= '" + entry.getValue() + "',");
-		}
+		String query = "UPDATE customers SET "
+				+ "company_name = ?, company_id = ?, address = ?, fixed_phone = ?, mobile_phone = ?, email = ?, manager_name = ?, "
+				+ "turnover = ?, workforce = ?, creation_date = STR_TO_DATE(?,'%d-%m-%Y'), register_number = ?, website = ?, is_customer = ? "
+				+ "WHERE id = ?";
 
-		builder.deleteCharAt(builder.length() - 1);
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(query);
+		
+		ps1.setString(1, hmap.get("company_name"));
+		ps1.setString(2, hmap.get("company_id"));
+		ps1.setString(3, hmap.get("address"));
+		ps1.setString(4, hmap.get("fixed_phone"));
+		ps1.setString(5, hmap.get("mobile_phone"));
+		ps1.setString(6, hmap.get("email"));
+		ps1.setString(7, hmap.get("manager_name"));
+		ps1.setString(8, hmap.get("turnover"));
+		ps1.setString(9, hmap.get("workforce"));
+		ps1.setString(10, hmap.get("creation_date"));
+		ps1.setString(11, hmap.get("register_number"));
+		ps1.setString(12, hmap.get("website"));
+		ps1.setString(13, hmap.get("is_customer"));
+		ps1.setString(14, hmap.get("id"));
 
-		builder.append(" WHERE id= '" + hmap.get("id") + "'");
-
-		query = builder.toString();
-
-		PreparedStatement ps = Utility.getConn().prepareStatement(query);
-
-		ps.executeUpdate();
+		ps1.executeUpdate();
 
 		String getId = "SELECT * FROM customers WHERE id = ?";
-		PreparedStatement ps1 = Utility.getConn().prepareStatement(getId);
-		ps1.setString(1, hmap.get("id"));
-		ResultSet rs = ps1.executeQuery();
+		PreparedStatement ps2 = Utility.getConn().prepareStatement(getId);
+		ps2.setString(1, hmap.get("id"));
+		ResultSet rs = ps2.executeQuery();
 		JsonObject temp = new JsonObject();
 		if (rs.next()) {
 

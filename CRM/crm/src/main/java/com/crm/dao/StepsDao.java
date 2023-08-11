@@ -15,11 +15,14 @@ import com.google.gson.JsonObject;
 @Component
 public class StepsDao {
 
-	public JsonArray getAllSteps() throws SQLException {
+	public JsonArray getAllSteps(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
-		String query = "SELECT * FROM sales_steps order by percentage";
+		String query = "SELECT * FROM sales_steps WHERE company_id = ? order by percentage";
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("company_id"));
+		
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
 		

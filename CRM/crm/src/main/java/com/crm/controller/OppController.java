@@ -23,9 +23,9 @@ public class OppController {
 	OppDao dao;
 
 	@GetMapping("")
-	public ResponseEntity<String> get_all() {
+	public ResponseEntity<String> get_all(@RequestParam Map<String, String> hmap) {
 		try {
-			return new ResponseEntity<String>(dao.getAll(), HttpStatus.OK);
+			return new ResponseEntity<String>(dao.getAll(hmap), HttpStatus.OK);
 		} catch (Exception e) {
 			JsonObject response = new JsonObject();
 

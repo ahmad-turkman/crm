@@ -18,9 +18,11 @@ public class ContactDao {
 
 	public String getAllContacts(@RequestParam Map<String, String> hmap) throws SQLException {
 		Utility.connect();
-		String query = "SELECT * FROM contacts ";
+		String query = "SELECT * FROM contacts WHERE company_id = ?";
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("company_id"));
 
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
@@ -50,7 +52,7 @@ public class ContactDao {
 		Utility.connect();
 
 		String query1 = "INSERT INTO contacts (first_name, last_name, company_id, birth_date, employment_date, role, phone, email, address) "
-				+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "VALUES(?, ?, ?, STR_TO_DATE(?,'%d-%m-%Y'), STR_TO_DATE(?,'%d-%m-%Y'), ?, ?, ?, ?)";
 
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
@@ -62,7 +64,7 @@ public class ContactDao {
 		ps1.setString(6, hmap.get("role"));
 		ps1.setString(7, hmap.get("phone"));
 		ps1.setString(8, hmap.get("email"));
-		ps1.setString(9, hmap.get("adress"));
+		ps1.setString(9, hmap.get("address"));
 		ps1.executeUpdate();
 
 		String getId = "SELECT * FROM contacts WHERE id = (SELECT MAX(id) FROM contacts)";
@@ -90,21 +92,23 @@ public class ContactDao {
 	public String updateContact(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
 
-		String query = "";
-		StringBuilder builder = new StringBuilder("UPDATE contacts SET ");
-		for (Map.Entry<String, String> entry : hmap.entrySet()) {
-			if (entry.getKey().equals("id"))
-				continue;
-			builder.append(entry.getKey() + "= '" + entry.getValue() + "',");
-		}
-
-		builder.deleteCharAt(builder.length() - 1);
-
-		builder.append(" WHERE id= '" + hmap.get("id") + "'");
-
-		query = builder.toString();
-
+		String query = "UPDATE contacts "
+						+ "SET first_name=?, last_name=?, company_id=?, birth_date=STR_TO_DATE(?,'%d-%m-%Y'), employment_date=STR_TO_DATE(?,'%d-%m-%Y'), role=?, phone=?, email=?, address=? "
+						+ "WHERE id = ?";
+		
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("first_name"));
+		ps.setString(2, hmap.get("last_name"));
+		ps.setString(3, hmap.get("company_id"));
+		ps.setString(4, hmap.get("birth_date"));
+		ps.setString(5, hmap.get("employment_date"));
+		ps.setString(6, hmap.get("role"));
+		ps.setString(7, hmap.get("phone"));
+		ps.setString(8, hmap.get("email"));
+		ps.setString(9, hmap.get("address"));
+		ps.setString(10, hmap.get("id"));
+
 
 		ps.executeUpdate();
 

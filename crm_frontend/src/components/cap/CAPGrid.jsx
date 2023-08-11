@@ -64,10 +64,9 @@ const Grid = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { StringType, DateType } = Schema.Types;
+  const { DateType } = Schema.Types;
 
   const model = Schema.Model({
-    description: StringType().isRequired('This field is required.'),
     start_date: DateType()
       .isRequired('This field is required.')
       .addRule((value, data) => {

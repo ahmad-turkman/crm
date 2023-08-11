@@ -96,7 +96,6 @@ const Grid = () => {
     customer_id: StringType().isRequired('This field is required.'),
     product_id: StringType().isRequired('This field is required.'),
     step_id: StringType().isRequired('This field is required.'),
-    description: StringType().isRequired('This field is required.'),
     status: StringType().isRequired('This field is required.'),
     creation_date: DateType().isRequired('This field is required.'),
   });

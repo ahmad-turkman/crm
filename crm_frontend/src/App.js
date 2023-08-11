@@ -14,6 +14,7 @@ import Funnel from './components/funnel/Funnel';
 import CAPGrid from './components/cap/CAPGrid';
 import CAP from './components/cap/CAP';
 import 'jquery/dist/jquery';
+import NotLoggedin from './components/NotLoggedin';
 
 function App() {
   return (
@@ -32,379 +33,423 @@ function App() {
           <Route
             path="/"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <Stack.Item style={{ height: '100%' }}>
-                  <Sidenavigation isExpanded={true} />
-                </Stack.Item>
-              </Stack>
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <Stack.Item style={{ height: '100%' }}>
+                    <Sidenavigation isExpanded={true} />
+                  </Stack.Item>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/customers"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <CustomerGrid />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <CustomerGrid />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/leads"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      {' '}
-                      <CustomerGrid isLead={true} />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        {' '}
+                        <CustomerGrid isLead={true} />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/contacts"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <ContactGrid />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <ContactGrid />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/products"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <ProductGrid />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <ProductGrid />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/steps"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <StepsGrid />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <StepsGrid />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/opps"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <OppsGrid />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <OppsGrid />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="opps/:oppId"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <Opp />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <Opp />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/funnel"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <Funnel />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <Funnel />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/cap"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <CAPGrid />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <CAPGrid />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
           <Route
             path="/cap/:capId"
             element={
-              <Stack
-                direction="column"
-                alignItems="stretch"
-                style={{ height: '100%' }}
-              >
-                <StackItem>
-                  <Header />
-                </StackItem>
-                <StackItem flex={1} style={{ height: '100%' }}>
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    style={{ height: '100%' }}
-                  >
-                    <Stack.Item style={{ height: '100%' }}>
-                      <Sidenavigation />
-                    </Stack.Item>
-
-                    <Stack.Item
-                      flex={1}
-                      style={{ height: '100%', marginLeft: '60px' }}
+              localStorage.getItem('company_id') ? (
+                <Stack
+                  direction="column"
+                  alignItems="stretch"
+                  style={{ height: '100%' }}
+                >
+                  <StackItem>
+                    <Header />
+                  </StackItem>
+                  <StackItem flex={1} style={{ height: '100%' }}>
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="stretch"
+                      style={{ height: '100%' }}
                     >
-                      <CAP />
-                    </Stack.Item>
-                  </Stack>
-                </StackItem>
-                <StackItem>
-                  <Footer>Footer</Footer>
-                </StackItem>
-              </Stack>
+                      <Stack.Item style={{ height: '100%' }}>
+                        <Sidenavigation />
+                      </Stack.Item>
+
+                      <Stack.Item
+                        flex={1}
+                        style={{ height: '100%', marginLeft: '60px' }}
+                      >
+                        <CAP />
+                      </Stack.Item>
+                    </Stack>
+                  </StackItem>
+                  <StackItem>
+                    <Footer>Footer</Footer>
+                  </StackItem>
+                </Stack>
+              ) : (
+                <NotLoggedin />
+              )
             }
           />
         </Routes>

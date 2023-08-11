@@ -23,9 +23,9 @@ public class StepsController {
 	StepsDao dao;
 
 	@GetMapping("")
-	public ResponseEntity<String> get_all_steps() {
+	public ResponseEntity<String> get_all_steps(@RequestParam Map<String, String> hmap) {
 		try {
-			return new ResponseEntity<String>(dao.getAllSteps().toString(), HttpStatus.OK);
+			return new ResponseEntity<String>(dao.getAllSteps(hmap).toString(), HttpStatus.OK);
 		} catch (Exception e) {
 			JsonObject response = new JsonObject();
 

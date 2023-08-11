@@ -88,24 +88,30 @@ const Sidenavigation = ({ isExpanded }) => {
             >
               Opportunities
             </Nav.Item>
-            <Nav.Item
-              as={NavLink}
-              href="/funnel"
-              eventKey="7"
-              icon={<Icon as={FaFunnelDollar} size="1.5em" />}
-              style={{ textDecoration: 'none' }}
-            >
-              Funnel
-            </Nav.Item>
-            <Nav.Item
-              as={NavLink}
-              href="/cap"
-              eventKey="8"
-              icon={<Icon as={FaBusinessTime} size="1.5em" />}
-              style={{ textDecoration: 'none' }}
-            >
-              Commercial Action Plan (CAP)
-            </Nav.Item>
+            {localStorage.getItem('is_admin') ? (
+              <>
+                <Nav.Item
+                  as={NavLink}
+                  href="/funnel"
+                  eventKey="7"
+                  icon={<Icon as={FaFunnelDollar} size="1.5em" />}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Funnel
+                </Nav.Item>
+                <Nav.Item
+                  as={NavLink}
+                  href="/cap"
+                  eventKey="8"
+                  icon={<Icon as={FaBusinessTime} size="1.5em" />}
+                  style={{ textDecoration: 'none' }}
+                >
+                  Commercial Action Plan (CAP)
+                </Nav.Item>
+              </>
+            ) : (
+              ''
+            )}
           </Nav>
         </Sidenav.Body>
       </Sidenav>

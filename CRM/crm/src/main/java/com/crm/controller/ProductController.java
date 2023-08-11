@@ -23,9 +23,9 @@ public class ProductController {
 	ProductDao dao;
 
 	@GetMapping("")
-	public ResponseEntity<String> get_all_products() {
+	public ResponseEntity<String> get_all_products(@RequestParam Map<String, String> hmap) {
 		try {
-			return new ResponseEntity<String>(dao.getAllProducts(), HttpStatus.OK);
+			return new ResponseEntity<String>(dao.getAllProducts(hmap), HttpStatus.OK);
 		} catch (Exception e) {
 			JsonObject response = new JsonObject();
 

@@ -1,9 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
+
 import axios from '../api/axios';
 
 const Login = () => {
-  const navigate = useNavigate();
   const handleClick = (e) => {
     e.preventDefault();
 
@@ -22,6 +21,7 @@ const Login = () => {
         params: params,
       })
       .then((res) => {
+        localStorage.clear();
         const data = res.data;
 
         if (data.company_id) {
@@ -35,7 +35,7 @@ const Login = () => {
           } else {
             localStorage.setItem('is_admin', data.is_admin);
           }
-          navigate('/');
+          window.location.href = '/';
         } else {
           alert('Something went wrong!');
         }

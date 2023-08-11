@@ -30,18 +30,53 @@ const columns = [
     width: 200,
   },
   {
-    key: 'first_name',
-    label: 'First Name',
+    key: 'address',
+    label: 'Address',
     width: 200,
   },
   {
-    key: 'last_name',
-    label: 'Last Name',
+    key: 'fixed_phone',
+    label: 'Fixed Phone',
     width: 200,
   },
   {
-    key: 'birth_date',
-    label: 'Birth Date',
+    key: 'mobile_phone',
+    label: 'Mobile Phone',
+    width: 200,
+  },
+  {
+    key: 'email',
+    label: 'Email',
+    width: 200,
+  },
+  {
+    key: 'manager_name',
+    label: 'Manager Name',
+    width: 200,
+  },
+  {
+    key: 'turnover',
+    label: 'Turnover',
+    width: 200,
+  },
+  {
+    key: 'workforce',
+    label: 'Workforce',
+    width: 200,
+  },
+  {
+    key: 'creation_date',
+    label: 'Creation Date',
+    width: 200,
+  },
+  {
+    key: 'register_number',
+    label: 'Register Number',
+    width: 200,
+  },
+  {
+    key: 'website',
+    label: 'Website',
     width: 200,
   },
 ];
@@ -52,8 +87,32 @@ const Grid = ({ isLead }) => {
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [formValue, setFormValue] = useState({});
-  const [editFormValue, setEditFormValue] = useState({});
+  const [formValue, setFormValue] = useState({
+    address: '',
+    company_name: '',
+
+    email: '',
+    fixed_phone: '',
+    manager_name: '',
+    mobile_phone: '',
+    register_number: '',
+    turnover: '',
+    website: '',
+    workforce: '',
+  });
+  const [editFormValue, setEditFormValue] = useState({
+    address: '',
+    company_name: '',
+
+    email: '',
+    fixed_phone: '',
+    manager_name: '',
+    mobile_phone: '',
+    register_number: '',
+    turnover: '',
+    website: '',
+    workforce: '',
+  });
   const [sortColumn, setSortColumn] = useState();
   const [sortType, setSortType] = useState();
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -117,17 +176,46 @@ const Grid = ({ isLead }) => {
 
   const handleCloseAdd = () => {
     setOpenAdd(false);
-    setFormValue({});
+    setFormValue({
+      address: '',
+      company_name: '',
+      email: '',
+      fixed_phone: '',
+      manager_name: '',
+      mobile_phone: '',
+      register_number: '',
+      turnover: '',
+      website: '',
+      workforce: '',
+    });
   };
 
   const handleOpenEdit = (rowData) => {
-    setEditFormValue(rowData);
+    let mydata = {
+      ...rowData,
+      creation_date: rowData.creation_date
+        ? new Date(rowData.creation_date)
+        : null,
+    };
+
+    setEditFormValue(mydata);
     setOpenEdit(true);
   };
 
   const handleCloseEdit = () => {
     setOpenEdit(false);
-    setEditFormValue({});
+    setEditFormValue({
+      address: '',
+      company_name: '',
+      email: '',
+      fixed_phone: '',
+      manager_name: '',
+      mobile_phone: '',
+      register_number: '',
+      turnover: '',
+      website: '',
+      workforce: '',
+    });
   };
 
   const handleOpenDelete = (myid) => {
@@ -141,12 +229,20 @@ const Grid = ({ isLead }) => {
 
   const handleAdd = (valid) => {
     formValue.is_customer = isLead ? 0 : 1;
-    console.log(formValue);
+
+    let params = {
+      ...formValue,
+    };
+
+    if (formValue.creation_date)
+      params.creation_date = formValue.creation_date
+        .toLocaleDateString()
+        .replaceAll('/', '-');
 
     if (valid) {
       axios
         .post('/customers', null, {
-          params: formValue,
+          params: params,
         })
         .then((res) => {
           setData([...data, res.data]);
@@ -157,12 +253,19 @@ const Grid = ({ isLead }) => {
   };
 
   const handleEdit = (valid) => {
-    console.log(editFormValue);
+    let params = {
+      ...editFormValue,
+    };
+
+    if (editFormValue.creation_date)
+      params.creation_date = editFormValue.creation_date
+        .toLocaleDateString()
+        .replaceAll('/', '-');
 
     if (valid) {
       axios
         .put('/customers', null, {
-          params: editFormValue,
+          params: params,
         })
         .then((res) => {
           setData(

@@ -15,11 +15,14 @@ import com.google.gson.JsonObject;
 @Component
 public class CAPDao {
 
-	public JsonArray getAll() throws SQLException {
+	public JsonArray getAll(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
-		String query = "SELECT * FROM cap order by start_date";
+		String query = "SELECT * FROM cap WHERE company_id = ? order by start_date";
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		
+		ps.setString(1, hmap.get("company_id"));
+		
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
 		
