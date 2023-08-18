@@ -65,3 +65,25 @@ label {
   font-weight: 600;
   color: rgb(34, 34, 34);
 }
+
+.tabs__tab-list {
+  list-style: none;
+  display: flex;
+}
+
+.tab-item {
+  flex: 1;
+  font-weight: bold;
+  padding: 10px;
+  text-align: center;
+}
+
+.selected {
+  background-color: #d4d4d4;
+}
+
+.visionSave {
+  font-weight: bold;
+  background-color: #3498ff;
+  color: white;
+}

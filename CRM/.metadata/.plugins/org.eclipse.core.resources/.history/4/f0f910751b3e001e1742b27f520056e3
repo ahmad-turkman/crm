@@ -143,28 +143,26 @@ public class CAPDao {
 		return temp.toString();
 	}
 	
-	public JsonObject getVision(Map<String, String> hmap) throws SQLException {
+	public JsonArray getVision(Map<String, String> hmap) throws SQLException {
 		Utility.connect();
 		String query = "SELECT * FROM vision WHERE cap_id = ?";
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
 		
-		ps.setString(1, hmap.get("cap_id"));
-		
 		ResultSet rs = ps.executeQuery();
-
-		JsonObject temp = new JsonObject();
+		JsonArray out = new JsonArray();
 		
-		if(rs.next()) {
+		while (rs.next()) {
+
+			JsonObject temp = new JsonObject();
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("description", rs.getString("description"));
 
+			out.add(temp);
 		}
-		
 		Utility.disconnect();
-		
-		return temp;
+		return out;
 	}
 
 	public String saveVision(Map<String, String> hmap) throws SQLException, IOException {
@@ -175,7 +173,7 @@ public class CAPDao {
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("description"));
-		ps1.setString(2, hmap.get("cap_id"));
+		ps1.setString(4, hmap.get("cap_id"));
 
 		ps1.executeUpdate();
 
@@ -204,11 +202,11 @@ public class CAPDao {
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
 		
 		ps.setString(1, hmap.get("description"));
-		ps.setString(2, hmap.get("id"));
+		ps.setString(4, hmap.get("id"));
 
 		ps.executeUpdate();
 
-		String getId = "SELECT * FROM vision WHERE id = ?";
+		String getId = "SELECT * FROM cap WHERE id = ?";
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(getId);
 
 		ps1.setString(1, hmap.get("id"));
@@ -221,7 +219,8 @@ public class CAPDao {
 
 			temp.addProperty("id", rs.getString("id"));
 			temp.addProperty("description", rs.getString("description"));
-			
+			temp.addProperty("start_date", rs.getString("start_date"));
+			temp.addProperty("end_date", rs.getString("end_date"));
 		}
 		return temp.toString();
 

@@ -149,7 +149,7 @@ public class CAPDao {
 
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
 		
-		ps.setString(1, hmap.get("cap_id"));
+		ps1.setString(1, hmap.get("cap_id"));
 		
 		ResultSet rs = ps.executeQuery();
 
@@ -175,7 +175,7 @@ public class CAPDao {
 		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
 
 		ps1.setString(1, hmap.get("description"));
-		ps1.setString(2, hmap.get("cap_id"));
+		ps1.setString(4, hmap.get("cap_id"));
 
 		ps1.executeUpdate();
 
@@ -204,7 +204,7 @@ public class CAPDao {
 		PreparedStatement ps = Utility.getConn().prepareStatement(query);
 		
 		ps.setString(1, hmap.get("description"));
-		ps.setString(2, hmap.get("id"));
+		ps.setString(4, hmap.get("id"));
 
 		ps.executeUpdate();
 

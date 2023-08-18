@@ -114,20 +114,5 @@ public class CAPController {
 			return new ResponseEntity<String>(response.toString(), HttpStatus.NOT_FOUND);
 		}
 	}
-	
-	@PutMapping("vision")
-	public ResponseEntity<String> updateVision(@RequestParam Map<String, String> hmap) {
-		try {
-			return new ResponseEntity<String>(dao.updateVision(hmap), HttpStatus.OK);
-		} catch (Exception e) {
-			JsonObject response = new JsonObject();
-
-			response.addProperty("status", "Not Found");
-			response.addProperty("statusCode", 404);
-			response.addProperty("message", e.getMessage());
-
-			return new ResponseEntity<String>(response.toString(), HttpStatus.NOT_FOUND);
-		}
-	}
 
 }
