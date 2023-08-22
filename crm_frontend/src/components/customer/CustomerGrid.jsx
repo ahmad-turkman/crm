@@ -20,6 +20,8 @@ import axios from '../../api/axios';
 import AddModal from './AddModal';
 import EditModal from './EditModal';
 import DeleteModal from './DeleteModal';
+import AccountModal from './AccountModal';
+import AdminIcon from '@rsuite/icons/Admin';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -81,16 +83,16 @@ const columns = [
   },
 ];
 
-const Grid = ({ isLead }) => {
+const Grid = ({ isLead, title }) => {
   const [data, setData] = useState([]);
   const [id, setId] = useState();
   const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
+  const [openAccount, setOpenAccount] = useState(false);
   const [formValue, setFormValue] = useState({
     address: '',
     company_name: '',
-
     email: '',
     fixed_phone: '',
     manager_name: '',
@@ -103,7 +105,6 @@ const Grid = ({ isLead }) => {
   const [editFormValue, setEditFormValue] = useState({
     address: '',
     company_name: '',
-
     email: '',
     fixed_phone: '',
     manager_name: '',
@@ -227,6 +228,16 @@ const Grid = ({ isLead }) => {
     setOpenDelete(false);
   };
 
+  const handleOpenAccount = (myid) => {
+    setId(myid);
+    setOpenAccount(true);
+  };
+
+  const handleCloseAccount = (setAccount) => {
+    setOpenAccount(false);
+    setAccount({});
+  };
+
   const handleAdd = (valid) => {
     formValue.is_customer = isLead ? 0 : 1;
 
@@ -280,8 +291,6 @@ const Grid = ({ isLead }) => {
   };
 
   const handleDelete = () => {
-    console.log(id);
-
     axios
       .delete('/customers', {
         params: { id: id },
@@ -297,7 +306,7 @@ const Grid = ({ isLead }) => {
     <>
       <Stack direction="column" alignItems="stretch" style={{ height: '100%' }}>
         <span style={{ fontWeight: 'bold', fontSize: '20px' }}>
-          List of Customers
+          List of {title}
         </span>
         <ButtonToolbar>
           <Whisper
@@ -332,7 +341,7 @@ const Grid = ({ isLead }) => {
             sortType={sortType}
             onSortColumn={handleSortColumn}
           >
-            <Column width={100}>
+            <Column width={150}>
               <HeaderCell></HeaderCell>
               <Cell style={{ padding: '6px' }}>
                 {(rowData) => (
@@ -359,6 +368,21 @@ const Grid = ({ isLead }) => {
                         onClick={() => handleOpenDelete(rowData.id)}
                       />
                     </Whisper>
+                    {localStorage.getItem('is_admin') ? (
+                      <Whisper
+                        placement="right"
+                        controlId="control-id-hover"
+                        trigger="hover"
+                        speaker={<Tooltip>Account</Tooltip>}
+                      >
+                        <IconButton
+                          icon={<AdminIcon />}
+                          onClick={() => handleOpenAccount(rowData.id)}
+                        />
+                      </Whisper>
+                    ) : (
+                      ''
+                    )}
                   </ButtonToolbar>
                 )}
               </Cell>
@@ -413,6 +437,12 @@ const Grid = ({ isLead }) => {
         handleClose={handleCloseDelete}
         title="customer"
         handleOk={handleDelete}
+      />
+      <AccountModal
+        open={openAccount}
+        handleClose={handleCloseAccount}
+        title="Account"
+        id={id}
       />
     </>
   );

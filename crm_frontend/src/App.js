@@ -7,7 +7,7 @@ import CustomerGrid from './components/customer/CustomerGrid';
 import ContactGrid from './components/contact/ContactGrid';
 import StepsGrid from './components/sales_steps/StepsGrid';
 import OppsGrid from './components/opportunities/OppsGrid';
-import { Footer, Stack } from 'rsuite';
+import { Stack } from 'rsuite';
 import StackItem from 'rsuite/esm/Stack/StackItem';
 import Opp from './components/opportunities/Opp';
 import Funnel from './components/funnel/Funnel';
@@ -78,12 +78,9 @@ function App() {
                         flex={1}
                         style={{ height: '100%', marginLeft: '60px' }}
                       >
-                        <CustomerGrid />
+                        <CustomerGrid isLead={false} title="Customers" />
                       </Stack.Item>
                     </Stack>
-                  </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
                   </StackItem>
                 </Stack>
               ) : (
@@ -119,12 +116,9 @@ function App() {
                         style={{ height: '100%', marginLeft: '60px' }}
                       >
                         {' '}
-                        <CustomerGrid isLead={true} />
+                        <CustomerGrid isLead={true} title="Leads" />
                       </Stack.Item>
                     </Stack>
-                  </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
                   </StackItem>
                 </Stack>
               ) : (
@@ -163,9 +157,6 @@ function App() {
                       </Stack.Item>
                     </Stack>
                   </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
-                  </StackItem>
                 </Stack>
               ) : (
                 <NotLoggedin />
@@ -202,9 +193,6 @@ function App() {
                         <ProductGrid />
                       </Stack.Item>
                     </Stack>
-                  </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
                   </StackItem>
                 </Stack>
               ) : (
@@ -243,9 +231,6 @@ function App() {
                       </Stack.Item>
                     </Stack>
                   </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
-                  </StackItem>
                 </Stack>
               ) : (
                 <NotLoggedin />
@@ -282,9 +267,6 @@ function App() {
                         <OppsGrid />
                       </Stack.Item>
                     </Stack>
-                  </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
                   </StackItem>
                 </Stack>
               ) : (
@@ -323,9 +305,6 @@ function App() {
                       </Stack.Item>
                     </Stack>
                   </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
-                  </StackItem>
                 </Stack>
               ) : (
                 <NotLoggedin />
@@ -362,9 +341,6 @@ function App() {
                         <Funnel />
                       </Stack.Item>
                     </Stack>
-                  </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
                   </StackItem>
                 </Stack>
               ) : (
@@ -403,9 +379,6 @@ function App() {
                       </Stack.Item>
                     </Stack>
                   </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
-                  </StackItem>
                 </Stack>
               ) : (
                 <NotLoggedin />
@@ -442,9 +415,6 @@ function App() {
                         <CAP />
                       </Stack.Item>
                     </Stack>
-                  </StackItem>
-                  <StackItem>
-                    <Footer>Footer</Footer>
                   </StackItem>
                 </Stack>
               ) : (

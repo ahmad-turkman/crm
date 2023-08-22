@@ -69,6 +69,7 @@ label {
 .tabs__tab-list {
   list-style: none;
   display: flex;
+  border-bottom: 1px solid black;
 }
 
 .tab-item {
@@ -80,10 +81,22 @@ label {
 
 .selected {
   background-color: #d4d4d4;
+  border-bottom: 2px solid black;
 }
 
 .visionSave {
   font-weight: bold;
   background-color: #3498ff;
+  color: white;
+}
+
+.swot {
+  display: flex;
+  justify-content: space-around;
+}
+
+.swot-title {
+  text-align: center;
+  flex: 1;
   color: white;
 }

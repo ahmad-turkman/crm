@@ -23,8 +23,6 @@ public class ProductDao {
 		
 		ps.setString(1, hmap.get("company_id"));
 		
-		System.out.println(ps);
-		
 		ResultSet rs = ps.executeQuery();
 		JsonArray out = new JsonArray();
 

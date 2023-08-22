@@ -2,14 +2,16 @@ import { useLocation } from 'react-router-dom';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 import '../../index.css';
 import Vision from './Vision';
+import SWOT from './swot/SWOT';
+import Pareto from './pareto/Pareto';
 
 const Opp = () => {
   let { state } = useLocation();
   let cap = state;
 
   return (
-    <div style={{ padding: '40px' }}>
-      <Tabs>
+    <div style={{ padding: '40px', height: '100%' }}>
+      <Tabs style={{ height: '100%' }}>
         <TabList className="tabs__tab-list">
           <Tab className="tab-item" selectedClassName="selected">
             Vision
@@ -24,9 +26,9 @@ const Opp = () => {
           <Tab className="tab-item" selectedClassName="selected">
             RFM
           </Tab>
-          <Tab className="tab-item" selectedClassName="selected">
+          {/* <Tab className="tab-item" selectedClassName="selected">
             IPO/IPA
-          </Tab>
+          </Tab> */}
         </TabList>
 
         <TabPanel>
@@ -36,17 +38,21 @@ const Opp = () => {
           </div>
         </TabPanel>
         <TabPanel>
-          <h2>Any content 2</h2>
+          <div>
+            <SWOT cap={cap} />
+          </div>
+        </TabPanel>
+        <TabPanel style={{ height: '100%' }}>
+          <div style={{ height: '100%' }}>
+            <Pareto />
+          </div>
         </TabPanel>
         <TabPanel>
-          <h2>Any content 3</h2>
+          <h2>RFM</h2>
         </TabPanel>
-        <TabPanel>
-          <h2>Any content 4</h2>
-        </TabPanel>
-        <TabPanel>
+        {/* <TabPanel>
           <h2>Any content 5</h2>
-        </TabPanel>
+        </TabPanel> */}
       </Tabs>
     </div>
   );

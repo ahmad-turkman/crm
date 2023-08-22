@@ -153,6 +153,53 @@ const Grid = () => {
     setSortType(sortType);
   };
 
+  const [customers, setCustomers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [steps, setSteps] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get('/customers')
+      .then((res) => {
+        let selectData = res.data.map((item) => ({
+          label:
+            item.company_name +
+            (item.is_customer === '1' ? ' (Customer)' : ' (Lead)'),
+          value: item.id,
+        }));
+        setCustomers(selectData);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('/products')
+      .then((res) => {
+        let selectData = res.data.map((item) => ({
+          label: item.name,
+          value: item.id,
+        }));
+        setProducts(selectData);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('/steps')
+      .then((res) => {
+        let selectData = res.data.map((item) => ({
+          number: item.number,
+          label: `${item.description} (${item.percentage}%)`,
+          value: item.id,
+          percentage: item.percentage,
+        }));
+        setSteps(selectData);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const handleOpenAdd = () => setOpenAdd(true);
 
   const handleCloseAdd = () => {
@@ -223,11 +270,16 @@ const Grid = () => {
   };
 
   const handleEdit = (valid) => {
+    let step = steps.find((x) => x.value === editFormValue.step_id);
+
+    console.log('step', step);
+
     let params = {
       ...editFormValue,
       creation_date: editFormValue.creation_date
         .toLocaleDateString()
         .replaceAll('/', '-'),
+      isWon: step.percentage === '100',
     };
 
     console.log(params);
@@ -262,53 +314,6 @@ const Grid = () => {
       })
       .catch((err) => console.log(err));
   };
-
-  const [customers, setCustomers] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [steps, setSteps] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get('/customers')
-      .then((res) => {
-        let selectData = res.data.map((item) => ({
-          label:
-            item.company_name +
-            (item.is_customer === '1' ? ' (Customer)' : ' (Lead)'),
-          value: item.id,
-        }));
-        setCustomers(selectData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get('/products')
-      .then((res) => {
-        let selectData = res.data.map((item) => ({
-          label: item.name,
-          value: item.id,
-        }));
-        setProducts(selectData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get('/steps')
-      .then((res) => {
-        let selectData = res.data.map((item) => ({
-          number: item.number,
-          label: `${item.description} (${item.percentage}%)`,
-          value: item.id,
-          percentage: item.percentage,
-        }));
-        setSteps(selectData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
 
   return (
     <>

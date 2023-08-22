@@ -1,0 +1,179 @@
+package com.crm.dao;
+
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.crm.Utility;
+import com.google.gson.JsonObject;
+
+@Component
+public class AccountDao {
+	
+	public String createAccount(Map<String, String> hmap) throws SQLException, IOException {
+		Utility.connect();
+		
+		if(hmap.containsKey("customer_id")) {
+
+		String q = "INSERT INTO company(customer_id) VALUES(?)";
+
+		PreparedStatement prs = Utility.getConn().prepareStatement(q);
+
+		prs.setString(1, hmap.get("customer_id"));
+
+		prs.executeUpdate();
+		
+		String q1 = "SELECT MAX(id) FROM company";
+
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(q1);
+
+		ResultSet res = ps1.executeQuery();
+		
+		String id = "";
+		
+		if(res.next()) {
+			id = res.getString(1);
+		}
+		
+		String q2 = "INSERT INTO account(username, password, creation_date, expire_date, contact_id, company_id) VALUES(?, ?, STR_TO_DATE(?,'%d-%m-%Y'), STR_TO_DATE(?,'%d-%m-%Y'), ?, ?)";
+
+		PreparedStatement prs1 = Utility.getConn().prepareStatement(q2);
+
+		prs1.setString(1, hmap.get("customer_id"));
+		prs1.setString(1, hmap.get("customer_id"));
+		prs1.setString(1, hmap.get("customer_id"));
+		prs1.setString(1, hmap.get("customer_id"));
+		prs1.setString(1, hmap.get("customer_id"));
+
+		prs1.executeUpdate();
+		
+		
+		String getRow = "SELECT A.*, B.company_name AS customer, B.is_customer, C.name AS product, "
+				+ "(SELECT CONCAT(sa.id, ',', percentage) FROM probabilities p LEFT JOIN sales_steps sa ON sa.id = p.step_id WHERE opp_id = A.id order by percentage desc limit 1) AS probability "
+				+ "FROM opportunities A " + "LEFT JOIN customers B ON B.id = A.customer_id "
+				+ "LEFT JOIN products C ON C.id = A.product_id " + " WHERE A.id = (SELECT MAX(id) FROM opportunities)";
+		PreparedStatement ps = Utility.getConn().prepareStatement(getRow);
+		ResultSet rs = ps.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+			temp.addProperty("customer_id", rs.getString("customer_id"));
+			temp.addProperty("product_id", rs.getString("product_id"));
+			temp.addProperty("status", rs.getString("status"));
+			temp.addProperty("creation_date", rs.getString("creation_date"));
+			temp.addProperty("customer", rs.getString("customer"));
+			temp.addProperty("is_customer", rs.getString("is_customer"));
+			temp.addProperty("product", rs.getString("product"));
+			if (rs.getString("probability") != null) {
+				String[] proba = rs.getString("probability").split(",");
+
+				temp.addProperty("step_id", proba[0]);
+				temp.addProperty("probability", proba[1]);
+			}
+		}
+
+		return temp.toString();
+		}else {
+			
+		}
+
+	}
+
+	public String login(Map<String, String> hmap) throws SQLException, IOException {
+		Utility.connect();
+
+		String q = "SELECT COUNT(*), password, is_admin, contact_id, company_id FROM account WHERE username=?";
+
+		PreparedStatement prs = Utility.getConn().prepareStatement(q);
+
+		prs.setString(1, hmap.get("username"));
+
+		ResultSet res = prs.executeQuery();
+
+		res.next();
+
+		if (res.getInt(1) > 0) {
+
+			// BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+			// encoder.matches(hmap.get("password"), res.getString(2))
+
+			if (hmap.get("password").equals(res.getString(2))) {
+
+				boolean isAdmin = res.getBoolean(3);
+				String contactId = res.getString(4);
+				String companyId = res.getString(5);
+
+				return getAccountDetails(hmap.get("username"), isAdmin, contactId, companyId).toString();
+
+			} else {
+				throw new SQLException("Unauthorized");
+			}
+		} else {
+			throw new SQLException("No account found!");
+		}
+	}
+
+	private JsonObject getAccountDetails(String username, boolean isAdmin, String contactId, String companyId)
+			throws SQLException {
+
+		Utility.connect();
+
+		if (companyId != null) {
+
+			String query = "SELECT * FROM company LEFT JOIN customers ON company.customer_id = customers.id WHERE company.id = ?";
+
+			PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+			ps.setString(1, companyId);
+
+			ResultSet rs = ps.executeQuery();
+
+			JsonObject temp = new JsonObject();
+
+			if (rs.next()) {
+
+				temp.addProperty("company_name", rs.getString("company_name"));
+				temp.addProperty("company_id", companyId);
+				temp.addProperty("is_admin", isAdmin);
+			}
+
+			return temp;
+		} else {
+
+			String query = "SELECT contacts.*, customers.company_name FROM contacts "
+					+ "LEFT JOIN company ON company.id = contacts.company_id "
+					+ "LEFT JOIN customers ON customers.id = company.customer_id "
+					+ "WHERE contacts.id = ?";
+
+			PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+			ps.setString(1, contactId);
+
+			ResultSet rs = ps.executeQuery();
+
+			JsonObject temp = new JsonObject();
+
+			if (rs.next()) {
+
+				temp.addProperty("company_id", rs.getString("company_id"));
+				temp.addProperty("company_name", rs.getString("company_name"));
+				temp.addProperty("contact_id", contactId);
+				temp.addProperty("first_name", rs.getString("first_name"));
+				temp.addProperty("last_name", rs.getString("last_name"));
+			}
+
+			return temp;
+
+		}
+
+	}
+
+}

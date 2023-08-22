@@ -1,0 +1,520 @@
+package com.crm.dao;
+
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
+import com.crm.Utility;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+@Component
+public class CAPDao {
+
+	public JsonArray getAll(Map<String, String> hmap) throws SQLException {
+		Utility.connect();
+		String query = "SELECT * FROM cap WHERE company_id = ? order by start_date";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("company_id"));
+
+		ResultSet rs = ps.executeQuery();
+		JsonArray out = new JsonArray();
+
+		while (rs.next()) {
+
+			JsonObject temp = new JsonObject();
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+			temp.addProperty("start_date", rs.getString("start_date"));
+			temp.addProperty("end_date", rs.getString("end_date"));
+
+			out.add(temp);
+		}
+		Utility.disconnect();
+		return out;
+	}
+
+	public String add(Map<String, String> hmap) throws SQLException, IOException {
+		Utility.connect();
+
+		String query1 = "INSERT INTO cap (description, start_date, end_date, company_id) VALUES(?, STR_TO_DATE(?,'%d-%m-%Y'), STR_TO_DATE(?,'%d-%m-%Y'), ?)";
+
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
+
+		ps1.setString(1, hmap.get("description"));
+		ps1.setString(2, hmap.get("start_date"));
+		ps1.setString(3, hmap.get("end_date"));
+		ps1.setString(4, hmap.get("company_id"));
+
+		ps1.executeUpdate();
+
+		String getId = "SELECT * FROM cap WHERE id = (SELECT MAX(id) FROM cap)";
+		PreparedStatement ps = Utility.getConn().prepareStatement(getId);
+		ResultSet rs = ps.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+			temp.addProperty("start_date", rs.getString("start_date"));
+			temp.addProperty("end_date", rs.getString("end_date"));
+		}
+		return temp.toString();
+
+	}
+
+	public String update(Map<String, String> hmap) throws SQLException {
+		Utility.connect();
+
+		String query = "UPDATE cap SET description = ?, start_date= STR_TO_DATE(?,'%d-%m-%Y'), end_date = STR_TO_DATE(?,'%d-%m-%Y') WHERE id = ?";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("description"));
+		ps.setString(2, hmap.get("start_date"));
+		ps.setString(3, hmap.get("end_date"));
+		ps.setString(4, hmap.get("id"));
+
+		ps.executeUpdate();
+
+		String getId = "SELECT * FROM cap WHERE id = ?";
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(getId);
+
+		ps1.setString(1, hmap.get("id"));
+
+		ResultSet rs = ps1.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+			temp.addProperty("start_date", rs.getString("start_date"));
+			temp.addProperty("end_date", rs.getString("end_date"));
+		}
+		return temp.toString();
+
+	}
+
+	public String delete(Map<String, String> hmap) throws SQLException {
+
+		Utility.connect();
+
+		String query1 = "SELECT * FROM cap WHERE id = ?";
+
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
+
+		ps1.setString(1, hmap.get("id"));
+
+		ResultSet rs = ps1.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+			temp.addProperty("start_date", rs.getString("start_date"));
+			temp.addProperty("end_date", rs.getString("end_date"));
+		}
+
+		String query = "DELETE FROM cap WHERE id=?";
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		ps.setString(1, hmap.get("id"));
+
+		int i = ps.executeUpdate();
+
+		Utility.disconnect();
+
+		if (i < 1)
+			throw new SQLException();
+
+		return temp.toString();
+	}
+
+	public JsonObject getVision(Map<String, String> hmap) throws SQLException {
+		Utility.connect();
+		String query = "SELECT * FROM vision WHERE cap_id = ?";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("cap_id"));
+
+		ResultSet rs = ps.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+
+		}
+
+		Utility.disconnect();
+
+		return temp;
+	}
+
+	public String saveVision(Map<String, String> hmap) throws SQLException, IOException {
+		Utility.connect();
+
+		String query1 = "INSERT INTO vision (description, cap_id) VALUES(?, ?)";
+
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
+
+		ps1.setString(1, hmap.get("description"));
+		ps1.setString(2, hmap.get("cap_id"));
+
+		ps1.executeUpdate();
+
+		String getId = "SELECT * FROM vision WHERE id = (SELECT MAX(id) FROM vision)";
+		PreparedStatement ps = Utility.getConn().prepareStatement(getId);
+		ResultSet rs = ps.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+
+		}
+		return temp.toString();
+
+	}
+
+	public String updateVision(Map<String, String> hmap) throws SQLException {
+		Utility.connect();
+
+		String query = "UPDATE vision SET description = ? WHERE id = ?";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("description"));
+		ps.setString(2, hmap.get("id"));
+
+		ps.executeUpdate();
+
+		String getId = "SELECT * FROM vision WHERE id = ?";
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(getId);
+
+		ps1.setString(1, hmap.get("id"));
+
+		ResultSet rs = ps1.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+
+		}
+		return temp.toString();
+
+	}
+
+	public JsonArray getSWOT(Map<String, String> hmap) throws SQLException {
+		Utility.connect();
+		String query = "SELECT * FROM swot WHERE cap_id = ? AND type = ?";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("cap_id"));
+		ps.setString(2, hmap.get("type"));
+
+		ResultSet rs = ps.executeQuery();
+		JsonArray out = new JsonArray();
+
+		while (rs.next()) {
+
+			JsonObject temp = new JsonObject();
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+
+			out.add(temp);
+		}
+		Utility.disconnect();
+		return out;
+	}
+
+	public String saveSWOT(Map<String, String> hmap) throws SQLException, IOException {
+		Utility.connect();
+
+		String query1 = "INSERT INTO swot (description, type, cap_id) VALUES(?, ?, ?)";
+
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
+
+		ps1.setString(1, hmap.get("description"));
+		ps1.setString(2, hmap.get("type"));
+		ps1.setString(3, hmap.get("cap_id"));
+
+		ps1.executeUpdate();
+
+		String getId = "SELECT * FROM swot WHERE id = (SELECT MAX(id) FROM swot)";
+		PreparedStatement ps = Utility.getConn().prepareStatement(getId);
+		ResultSet rs = ps.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+		}
+		return temp.toString();
+
+	}
+
+	public String updateSWOT(Map<String, String> hmap) throws SQLException {
+		Utility.connect();
+
+		String query = "UPDATE swot SET description = ? WHERE id = ?";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("description"));
+		ps.setString(2, hmap.get("id"));
+
+		ps.executeUpdate();
+
+		String getId = "SELECT * FROM swot WHERE id = ?";
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(getId);
+
+		ps1.setString(1, hmap.get("id"));
+
+		ResultSet rs = ps1.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+		}
+		return temp.toString();
+
+	}
+
+	public String deleteSWOT(Map<String, String> hmap) throws SQLException {
+
+		Utility.connect();
+
+		String query1 = "SELECT * FROM swot WHERE id = ?";
+
+		PreparedStatement ps1 = Utility.getConn().prepareStatement(query1);
+
+		ps1.setString(1, hmap.get("id"));
+
+		ResultSet rs = ps1.executeQuery();
+
+		JsonObject temp = new JsonObject();
+
+		if (rs.next()) {
+
+			temp.addProperty("id", rs.getString("id"));
+			temp.addProperty("description", rs.getString("description"));
+		}
+
+		String query = "DELETE FROM swot WHERE id=?";
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+		ps.setString(1, hmap.get("id"));
+
+		int i = ps.executeUpdate();
+
+		Utility.disconnect();
+
+		if (i < 1)
+			throw new SQLException();
+
+		return temp.toString();
+	}
+
+	public String pareto(Map<String, String> hmap) throws SQLException, ParseException {
+
+		Map<String, JsonObject> potentialPareto = new HashMap<>();
+
+		double Potentialcumulative = 0;
+		double PotentialcumulativePercentage = 0.0;
+
+		String query = "SELECT C.company_name, SUM(p.value) AS SUM FROM payment p LEFT JOIN customers C ON C.id = p.customer_id WHERE p.company_id = ? GROUP BY company_name";
+
+		PreparedStatement ps = Utility.getConn().prepareStatement(query);
+
+		ps.setString(1, hmap.get("company_id"));
+
+		ResultSet rs = ps.executeQuery();
+
+		double allSum = 0;
+		int size = 0;
+		while (rs.next()) {
+			size++;
+			allSum += rs.getDouble("SUM");
+		}
+		rs.beforeFirst();
+
+		int PotentialnumberOfCustomers = size;
+		while (rs.next()) {
+			JsonObject obj = new JsonObject();
+
+			double sum = rs.getDouble("SUM");
+			Potentialcumulative += sum;
+			double Pcumul = Math.round(Potentialcumulative * 100) / 100.0;
+
+			PotentialcumulativePercentage += (1.0 / PotentialnumberOfCustomers) * 100;
+			double PcumulPercentage = Math.round(PotentialcumulativePercentage * 100) / 100.0;
+
+			obj.addProperty("potential", sum);
+			obj.addProperty("potential_cumulative", Pcumul);
+			obj.addProperty("potential_customer_percentage", PcumulPercentage);
+
+			String type = "A";
+			String color = "#b9f6ca";
+
+			double percentage = (Potentialcumulative / allSum) * 100;
+			percentage = Math.round(percentage * 100) / 100.0;
+			obj.addProperty("potential_percentage", percentage);
+			if (percentage > 80.0 && size > 5) {
+				type = "B";
+				color = "#ffe57f";
+			}
+			if (percentage > 95.0 && size > 5) {
+				type = "C";
+				color = "#f48fb1";
+			}
+			obj.addProperty("potential_type", type);
+			obj.addProperty("potential_color", color);
+
+			potentialPareto.put(rs.getString("company_name"), obj);
+		}
+
+		JsonArray out = new JsonArray();
+		double cumulative = 0;
+		double cumulativePercentage = 0.0;
+		int numberOfCustomers = potentialPareto.size();
+
+		int i = 1;
+
+		for (JsonElement el : arr) {
+			JsonObject obj = el.getAsJsonObject();
+
+			cumulative += obj.get("TOT_HT").getAsDouble();
+			double cumul = Math.round(cumulative * 100) / 100.0;
+
+			cumulativePercentage += (1.0 / numberOfCustomers) * 100;
+			double cumulPercentage = Math.round(cumulativePercentage * 100) / 100.0;
+
+			double CA = obj.get("TOT_HT").getAsDouble();
+			double ca = Math.round(CA * 100) / 100.0;
+			JsonObject temp = new JsonObject();
+
+			String idClient = obj.get("ID_CLIENT_CIBLE").getAsString();
+			String COMM = obj.get("COMMERCIAL") != null ? obj.get("COMMERCIAL").getAsString() : "";
+			String PHOTO = obj.get("PHOTO_COMMERCIAL") != null ? obj.get("PHOTO_COMMERCIAL").getAsString() : "";
+			temp.addProperty("index", i++);
+			temp.addProperty("ID_CLIENT", idClient);
+			temp.addProperty("NOM_CLIENT", obj.get("NOM_CLIENT_CIBLE").getAsString());
+			temp.addProperty("COMMERCIAL", COMM);
+			temp.addProperty("PHOTO_COMMERCIAL", PHOTO);
+			temp.addProperty("CA", ca);
+			temp.addProperty("cumulative", cumul);
+			temp.addProperty("customer_percentage", cumulPercentage);
+			String checked = checkStateMap.get(idClient);
+			if (checked != null)
+				temp.addProperty("CHECKED", checked);
+			else
+				temp.addProperty("isCreate", "1");
+
+			out.add(temp);
+		}
+
+		for (JsonElement el : out) {
+			JsonObject obj = el.getAsJsonObject();
+
+			if (potentialPareto.containsKey(obj.get("ID_CLIENT").getAsString())) {
+				JsonObject Pobj = potentialPareto.get(obj.get("ID_CLIENT").getAsString());
+
+				Set<String> keySet = Pobj.keySet();
+				for (String val : keySet) {
+					obj.addProperty(val, Pobj.get(val).getAsString());
+				}
+			}
+			String type = "A";
+			String color = "#b9f6ca";
+
+			double percentage = (obj.get("cumulative").getAsDouble() / cumulative) * 100;
+			percentage = Math.round(percentage * 100) / 100.0;
+			obj.addProperty("percentage", percentage);
+			if (percentage > 80.0) {
+				type = "B";
+				color = "#ffe57f";
+			}
+			if (percentage > 95.0) {
+				type = "C";
+				color = "#f48fb1";
+			}
+			obj.addProperty("type", type);
+			obj.addProperty("color", color);
+
+		}
+
+		return out.toString();
+	}
+
+	private JsonArray sortJsonArrayOfObjects(JsonArray jsonArr, String fieldTobeSortedBy) {
+		JsonArray sortedJsonArray = new JsonArray();
+
+		List<JsonObject> jsonValues = new ArrayList<JsonObject>();
+		for (int i = 0; i < jsonArr.size(); i++) {
+			jsonValues.add(jsonArr.get(i).getAsJsonObject());
+		}
+		Collections.sort(jsonValues, new Comparator<JsonObject>() {
+			private final String KEY_NAME = fieldTobeSortedBy;
+
+			@Override
+			public int compare(JsonObject a, JsonObject b) {
+				Double valA = 0.0;
+				Double valB = 0.0;
+
+				try {
+					valA = a.get(KEY_NAME).getAsDouble();
+					valB = b.get(KEY_NAME).getAsDouble();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				return -valA.compareTo(valB);
+				// if you want to change the sort order, simply use the following:
+				// return valA.compareTo(valB);
+			}
+		});
+
+		for (int i = 0; i < jsonArr.size(); i++) {
+			sortedJsonArray.add(jsonValues.get(i));
+		}
+		return sortedJsonArray;
+	}
+
+}
